@@ -1,7 +1,7 @@
 {
   "name": "Energia - Duas Casas",
   "short_name": "Energia",
-  "start_url": "./",
+  "start_url": "/energia-pwa/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#f5b400",
@@ -18,3 +18,4 @@
     }
   ]
 }
+

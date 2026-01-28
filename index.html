@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cálculo de Energia - Duas Casas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f2f4f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .section {
+            margin-top: 18px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-top: 6px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .resultado {
+            margin-top: 18px;
+            background: #f8f9fb;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .resultado p {
+            margin: 10px 0;
+        }
+
+        .valor {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .erro {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5b400">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Energia Casas">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<body>
+
+<div class="container">
+    <h2>Divisão de Energia ⚡</h2>
+
+    <!-- RELÓGIO PRINCIPAL -->
+    <div class="section">
+        <div class="section-title">🔌 RELÓGIO PRINCIPAL (CASA 1 + CASA 2)</div>
+
+        <label>Leitura Anterior (kWh)</label>
+        <input type="number" id="totalAnterior" placeholder="Ex: 1250">
+
+        <label>Leitura Atual (kWh)</label>
+        <input type="number" id="totalAtual" placeholder="Ex: 1380">
+    </div>
+
+    <!-- RELÓGIO CASA 1 -->
+    <div class="section">
+        <div class="section-title">🏠 RELÓGIO DA CASA 1</div>
+
+        <label>Leitura Anterior (kWh)</label>
+        <input type="number" id="casa1Anterior" placeholder="Ex: 430">
+
+        <label>Leitura Atual (kWh)</label>
+        <input type="number" id="casa1Atual" placeholder="Ex: 500">
+    </div>
+
+    <!-- RESULTADOS -->
+    <div class="section resultado">
+        <div class="section-title">📊 RESULTADO DO CÁLCULO</div>
+
+        <p>🔋 Consumo Total (Casa 1 + Casa 2):<br>
+            <span class="valor" id="consumoTotal">0</span> kWh
+        </p>
+
+        <p>🏠 Consumo Casa 1:<br>
+            <span class="valor" id="consumoCasa1">0</span> kWh
+        </p>
+
+        <p>🏡 Consumo Casa 2 (diferença):<br>
+            <span class="valor" id="consumoCasa2">0</span> kWh
+        </p>
+
+        <p id="mensagemErro" class="erro"></p>
+    </div>
+
+    <footer>
+        Fonte única • Relógio auxiliar • Cálculo automático
+    </footer>
+</div>
+
+<script>
+    const totalAnterior = document.getElementById("totalAnterior");
+    const totalAtual = document.getElementById("totalAtual");
+    const casa1Anterior = document.getElementById("casa1Anterior");
+    const casa1Atual = document.getElementById("casa1Atual");
+
+    const consumoTotalEl = document.getElementById("consumoTotal");
+    const consumoCasa1El = document.getElementById("consumoCasa1");
+    const consumoCasa2El = document.getElementById("consumoCasa2");
+    const erroEl = document.getElementById("mensagemErro");
+
+    function calcular() {
+        const tAnt = Number(totalAnterior.value);
+        const tAtu = Number(totalAtual.value);
+        const c1Ant = Number(casa1Anterior.value);
+        const c1Atu = Number(casa1Atual.value);
+
+        erroEl.textContent = "";
+
+        if (tAtu > tAnt && c1Atu > c1Ant) {
+            const consumoTotal = tAtu - tAnt;
+            const consumoCasa1 = c1Atu - c1Ant;
+            const consumoCasa2 = consumoTotal - consumoCasa1;
+
+            consumoTotalEl.textContent = consumoTotal;
+            consumoCasa1El.textContent = consumoCasa1;
+
+            if (consumoCasa2 < 0) {
+                consumoCasa2El.textContent = "Erro";
+                erroEl.textContent = "⚠️ Consumo da Casa 1 maior que o consumo total.";
+            } else {
+                consumoCasa2El.textContent = consumoCasa2;
+            }
+        } else {
+            consumoTotalEl.textContent = 0;
+            consumoCasa1El.textContent = 0;
+            consumoCasa2El.textContent = 0;
+        }
+    }
+
+    document.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", calcular);
+    });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>
